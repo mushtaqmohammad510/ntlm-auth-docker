@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  samba:
+    image: dperson/samba
+    container_name: samba-server
+    ports:
+      - "139:139"
+      - "445:445"
+    volumes:
+      - samba_data:/mount
+    command: >
+      -u "testuser;password"
+      -s "public;/mount;yes;no;no;testuser"
+
+  apache:
+    build:
+      context: ./apache
+    container_name: apache-server
+    ports:
+      - "80:80"
+    depends_on:
+      - samba
+    volumes:
+      - ./apache/ntlm.conf:/etc/apache2/conf-available/ntlm.conf
+
+  client:
+    build:
+      context: ./client
+    depends_on:
+      - apache
+
+volumes:
+  samba_data:
