@@ -1,11 +1,11 @@
 import requests
 from requests_ntlm import HttpNtlmAuth
 
-apache_host = "apache-server"
+url = "http://ntlm-apache"  # Using service name as hostname
 
 try:
     response = requests.get(
-        f"http://{apache_host}/protected",
+        url,
         auth=HttpNtlmAuth('testuser', 'password')
     )
     print("Status Code:", response.status_code)
